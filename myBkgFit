@@ -1,0 +1,73 @@
+#include "RooMsgService.h"
+#include "TFile.h"
+#include "TSystem.h"
+#include "TTree.h"
+#include "TString.h"
+#include "TTimeStamp.h"
+#include "RooWorkspace.h"
+#include "TROOT.h"
+#include "RooDouble.h"
+#include "TCanvas.h"
+#include "TStyle.h"
+#include "RooPlot.h"
+
+#include <fstream>
+#include "TChain.h"
+
+#include "RooAbsPdf.h"
+#include "mkdatacards.h"
+#include <RooAddPdf.h>
+#include <RooRealVar.h>
+#include <RooAbsData.h>
+#include <RooCBShape.h>
+#include <RooProduct.h>
+#include <RooAddition.h>
+#include <RooGaussian.h>
+#include <RooFitResult.h>
+#include <RooBernstein.h>
+#include <RooExtendPdf.h>
+#include <RooPolynomial.h>
+#include <RooAbsPdf.h>
+
+#include "RooAbsArg.h"
+
+#include "CalcSigma.C" ///for eff sigma calc
+
+
+#include "flashggFinalFit/Background/interface/PdfModelBuilder.h"
+#include <Math/PdfFuncMathCore.h>
+#include <Math/ProbFunc.h>
+#include <iomanip>
+#include "boost/program_options.hpp"
+#include "boost/algorithm/string/split.hpp"
+#include "boost/algorithm/string/classification.hpp"
+#include "boost/algorithm/string/predicate.hpp"
+
+#include "boost/program_options.hpp"
+#include "boost/lexical_cast.hpp"
+
+#include <RooGaussModel.h>
+#include <RooTruthModel.h>
+#include <RooDecay.h>
+
+#include "RooAddModel.h"
+
+#include <RooNumConvPdf.h>
+#include <RooGenericPdf.h>
+
+#include <RooExponential.h>
+#include <RooFFTConvPdf.h>
+
+#include <fitting_functions/RooStepBernstein.h>
+
+#include "RooHist.h"
+#include "CMS_lumi.C"
+#include "TLegend.h"
+
+#include "TLegendEntry.h"
+
+#include "TMathText.h"
+
+#include "RooCurve.h"
+
+#include "RooMinimizer.h"
