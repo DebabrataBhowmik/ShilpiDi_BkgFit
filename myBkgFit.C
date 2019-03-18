@@ -333,6 +333,7 @@ void myBkgFit(){
   TH1::AddDirectory(0);
   int _poldeg = 3;
   statAn s("RooBernstein", _poldeg);
-	
+
+}	
 	
 	
