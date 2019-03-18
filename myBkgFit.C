@@ -102,7 +102,11 @@ RooAbsData* statAn::fill_events(TH1* hMass, const char* filename, double trigEff
    if (!fi || fi->IsZombie())
       FATAL("TFile::Open() failed");
 	
-  TTree* tree = dynamic_cast<TTree*> (fi->Get("minitree"));
+  //TDirectory * dir = (TDirectory*)fi->Get("diPhoAna");
+  //TTree *tree;
+  //dir->GetObject("DiPhotonTree",tree);
+	
+  TTree* tree = dynamic_cast<TTree*> (fi->Get("diPhoAna/diPhotonTree"));
   if (!tree) FATAL("TFile::Get() failed");
   
   Int_t category;
