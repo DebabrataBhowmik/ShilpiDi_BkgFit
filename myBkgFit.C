@@ -97,6 +97,32 @@ double blind_max = 130;
 //double mylumi =12900; //pb-1
 double mylumi =36460; //pb-1
 
+RooAbsData* statAn::fill_events(TH1* hMass, const char* filename, double trigEff, int cat, bool usewei){
+  TFile* fi = TFile::Open(filename);
+   if (!fi || fi->IsZombie())
+      FATAL("TFile::Open() failed");
+	
+  TTree* tree = dynamic_cast<TTree*> (fi->Get("minitree"));
+  if (!tree) FATAL("TFile::Get() failed");
+  
+  Int_t category;
+  float hzg_mass;
+  float puwei;	
+	
+  rooMass = new RooDataSet("rooMass", "", RooArgSet(*fX));
+  for (Long64_t ev = 0; ev < tree->GetEntriesFast(); ev++) {
+    *fX = hzg_mass;	  
+    if(hzg_mass<xmin || hzg_mass>xmax) continue;
+           
+    hMass->Fill(hzg_mass);
+    rooMass->add(RooArgSet(*fX));
+	  
+  }
+  delete tree;
+  delete fi;
+  return rooMass;
+}
+
 void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
 
   rfit = NULL;
