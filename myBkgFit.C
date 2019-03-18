@@ -323,7 +323,15 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     //return 0;
     
   }
-  
-  
-  
 }
+
+void mkdatacards(){
+  gSystem->SetIncludePath("-I$ROOFITSYS/include");
+  //gROOT->LoadMacro("fitting_functions/RooGaussStepBernstein.cxx+");
+  //gROOT->LoadMacro("fitting_functions/fitting_functions.cc+");
+  TH1::AddDirectory(0);
+  int _poldeg = 3;
+  statAn s("RooBernstein", _poldeg);
+	
+	
+	
