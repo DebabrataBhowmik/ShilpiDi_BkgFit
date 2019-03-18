@@ -324,6 +324,296 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     
   }
 }
+   int W = 800;
+   int H = 600;
+   
+   int H_ref = 600;
+   int W_ref = 800;
+   float T = 0.08*H_ref;
+   float B = 0.12*H_ref;
+   float L = 0.12*W_ref;
+   float R = 0.04*W_ref;
+
+   fX->setRange("unblindR1",115,blind_min);
+   fX->setRange("unblindR2",blind_max,170.0);
+   
+   //RooPlot *plot = fX->frame(RooFit::Title("M_{Z#gamma} distribution"));
+   RooPlot *plot = fX->frame(RooFit::Title("   "));
+
+   cout<<"Printing the original data"<<endl;
+   dataObs->Print();
+
+   if(blind) dataObs->plotOn(plot,CutRange("unblindR1"),CutRange("unblindR2"),Binning(nBinsForMass));
+   else dataObs->plotOn(plot,Binning(nBinsForMass));
+
+   bgrfit->plotOn(plot);
+   RooHist* hpull = plot->pullHist() ;
+   
+    if(blind){
+     int n = hpull->GetN();
+     for(int in=0; in<n; in++){
+       double x, y;
+       hpull->GetPoint(in,x,y);
+       cout<<"For point i, x and y : "<<in<<" "<<x <<" "<<y<<endl;
+       
+       if(x>=blind_min && x<=blind_max) 
+	 hpull->SetPoint(in,x,-100);
+     }//for(int in=0; in<n; in++)
+    }//if(blind) 
+	
+   cout<<"==================PRINTING r BEFORE PLOTTING===================== "<<endl;
+   rfit->Print();
+   cout<<"==================PRINTED r BEFORE PLOTTING===================== "<<endl;
+   
+   if(plotRooFITErrBands){
+     bgrfit->plotOn(plot,RooFit::Name("2sigma"),RooFit::VisualizeError(*rfit,2),RooFit::FillColor(kYellow-4));
+     bgrfit->plotOn(plot,RooFit::Name("1sigma"), RooFit::VisualizeError(*rfit,1),RooFit::FillColor(kGreen-4));
+   }
+
+   bgrfit->plotOn(plot,RooFit::Name("central")); 
+   if(blind) dataObs->plotOn(plot,CutRange("unblindR1"),CutRange("unblindR2"),Binning(nBinsForMass));
+   else dataObs->plotOn(plot,Binning(nBinsForMass));
+
+   TGraphAsymmErrors *oneSigmaBand = new TGraphAsymmErrors();
+   TGraphAsymmErrors *twoSigmaBand = new TGraphAsymmErrors();
+
+    RooCurve *nomBkgCurve = plot->getCurve("central");
+   int p=0;
+   
+   double mhLow = xmin;
+   double mhHigh = xmax;
+   double massStep = 0.5;
+   double nllTolerance = 0.05;
+   
+   if(!plotRooFITErrBands){
+     for (double mass=double(mhLow); mass<double(mhHigh)+massStep; mass+=massStep) {
+       double lowedge = mass-0.5;
+       double upedge = mass+0.5;
+       double center = mass;
+       double nomBkg = nomBkgCurve->interpolate(center);
+       
+       // sensible range
+       double lowRange = TMath::Max(0.,nomBkg - 3*TMath::Sqrt(nomBkg));
+       double highRange = nomBkg + 3*TMath::Sqrt(nomBkg);
+       
+       double nllBest = getNLL(fX,bgrfit,dataObs,nomBkg,lowedge,upedge);    
+       double nllBest_full = getNLL(fX,bgrfit,dataObs,nomBkg,xmin, xmax);
+       
+       cout<<"mass nllBest nllBest_full "<<mass<<" "<<nllBest<<" "<<nllBest_full<<endl;      
+	     
+       double errLow1Value,errHigh1Value,errLow2Value,errHigh2Value;
+       // cant handle having 0 events
+       if (nomBkg<1.e-5) {
+	 errLow1Value = 0.;
+	 errLow2Value = 0.;
+	 errHigh1Value = guessNew(fX,bgrfit,dataObs,nomBkg,nllBest,highRange,lowedge,upedge,1.,nllTolerance);
+	 errHigh2Value = guessNew(fX,bgrfit,dataObs,nomBkg,nllBest,highRange,lowedge,upedge,4.,nllTolerance);
+       }
+       
+       else {
+	 // error calc algo
+	 if (verbose_) cout<< "[INFO] " << "errLow1" << endl;
+	 errLow1Value = guessNew(fX,bgrfit,dataObs,nomBkg,nllBest,lowRange,lowedge,upedge,1.,nllTolerance);
+	 if (verbose_) cout<< "[INFO] " << "errLow2" << endl;
+	 errLow2Value = guessNew(fX,bgrfit,dataObs,nomBkg,nllBest,lowRange,lowedge,upedge,4.,nllTolerance);
+	 
+	 if (verbose_) cout<< "[INFO] " << "errHigh1" << endl;
+	 errHigh1Value = guessNew(fX,bgrfit,dataObs,nomBkg,nllBest,highRange,lowedge,upedge,1.,nllTolerance);
+	 
+	 if (verbose_) cout<< "[INFO] " << "errHigh2" << endl;
+	 errHigh2Value = guessNew(fX,bgrfit,dataObs,nomBkg,nllBest,highRange,lowedge,upedge,4.,nllTolerance);	 
+       }
+	
+       double errLow1 = nomBkg - errLow1Value;
+       double errHigh1 = errHigh1Value - nomBkg;
+       double errLow2 = nomBkg - errLow2Value;
+       double errHigh2 = errHigh2Value - nomBkg;	     
+       
+       oneSigmaBand->SetPoint(p,center,nomBkg);
+       twoSigmaBand->SetPoint(p,center,nomBkg);
+       oneSigmaBand->SetPointError(p,0.,0.,errLow1,errHigh1);
+       twoSigmaBand->SetPointError(p,0.,0.,errLow2,errHigh2);
+       
+       p++;
+       }
+     }//if(!plotRooFITErrBands)	     
+
+     TCanvas *c = setTCanvasNicev1("ccat");
+     TPad *pad1;
+     TPad *pad2;
+
+     if(drawPulldistribution){
+       pad1 = new TPad("pad1", "The pad 80% of the height",0.0,0.3,1.0,1.0,21);
+       pad2 = new TPad("pad2", "The pad 20% of the height",0.0,0.0,1.0,0.350,22);
+   
+       pad1->SetFillColor(0);
+       pad2->SetFillColor(0);  
+       
+       pad1->Draw();
+       pad2->Draw();
+	     
+	pad1->cd();
+     }
+
+     if(!drawPulldistribution)
+     c->cd(); 
+     
+     gPad->SetLeftMargin(0.15);
+     plot->GetYaxis()->SetTitleOffset(1.6);
+   
+     double max = plot->GetMaximum();
+     plot->SetMaximum(max*1.5);
+     //plot->SetMinimum(0);
+     if(blind) plot->SetMinimum(0.0001);
+     if(!blind) plot->SetMinimum(0);
+     
+     plot->GetXaxis()->SetTitle("m_{#gamma#gamma} [GeV]");
+     plot->GetXaxis()->SetTitleSize(0.05);
+     plot->GetXaxis()->SetLabelFont(22);
+     plot->GetXaxis()->SetTitleFont(22);
+   
+     plot->GetYaxis()->SetTitle("Events / GeV");
+     plot->GetYaxis()->SetTitleSize(0.05);
+
+     plot->GetYaxis()->SetTitleOffset(1);
+     plot->GetYaxis()->SetLabelFont(22);
+     plot->GetYaxis()->SetTitleFont(22);
+   
+     
+   plot->GetXaxis()->SetLabelSize(0.05);
+   plot->GetYaxis()->SetLabelSize(0.05);
+
+   plot->GetXaxis()->SetTitleSize(0.05);
+   plot->GetYaxis()->SetTitleSize(0.05);
+
+   TLatex *lat = new TLatex();
+   lat->SetNDC();
+   lat->SetTextFont(42);
+
+   TMathText *latm = new TMathText();
+   latm->SetNDC();
+   latm->SetTextFont(42);
+
+   string text = "";
+   if (1) text = "#gamma#gamma";
+
+   plot->Draw();
+
+   if(!plotRooFITErrBands){  
+     oneSigmaBand->SetFillColor(kGreen+1);
+     oneSigmaBand->SetLineColor(kGreen+1);
+          
+     twoSigmaBand->SetFillColor(kOrange);
+     twoSigmaBand->SetLineColor(kOrange);	   
+
+      twoSigmaBand->Draw("L3 same");
+     oneSigmaBand->Draw("L3 same");
+   }
+
+   c->Modified();
+   c->Update();
+
+   plot->Draw("same");
+
+   c->Modified();
+   c->Update();
+
+   lat->DrawLatex(0.35,0.85,Form("#font[22]{#scale[0.85]{H#rightarrow #gamma#gamma#rightarrow %s }}",text.c_str()));
+   
+   c->Modified();
+   c->Update();
+   lat->DrawLatex(0.37,0.80,Form("#font[22]{#scale[0.8]{%s}}",tmpcat.c_str()));
+   //latm->DrawMathText(0.37,0.80,Form("#font[22]{#scale[0.8]{%s}}",tmpcat.c_str()));
+   c->Modified();
+   c->Update();
+   
+   int iproc = 0;
+   if(cat==5)
+     iproc = 1;
+   if(cat==6789)
+     iproc = 4;
+
+   double integ = hMasssig[iproc][5]->Integral();
+   hMasssig[iproc][5]->Scale(expected[iproc][5]*10/integ);
+   cout<<"Signal=====signal integ is "<<hMasssig[iproc][5]->Integral()<<endl;
+   hMasssig[iproc][5]->SetLineColor(2);
+   hMasssig[iproc][5]->SetLineWidth(2);
+
+   hMasssig[iproc][5]->Draw("sameHIST"); 
+
+   int iPeriod = 4;
+   int iPos = 11;
+
+   //CMS_lumi( c, iPeriod, iPos );
+
+   c->Update();
+   c->Modified();
+   c->Update();
+   
+   c->RedrawAxis();
+   c->Update();
+
+   TH1F *h1 = new TH1F("h1","",1,1,2);
+   h1->SetFillColor(kGreen-4);
+   TH1F *h2 = new TH1F("h2","",1,1,2);
+   h2->SetFillColor(kYellow-4);
+
+   TLegend *leg = new TLegend(0.6300402,0.6025436,0.9394975,0.8954704,NULL,"brNDC");
+   leg->SetBorderSize(0);
+   leg->SetTextFont(62);
+   leg->SetLineColor(1);
+   leg->SetLineStyle(1);
+   leg->SetLineWidth(1);
+   leg->SetFillColor(0);
+   leg->SetFillStyle(1001);
+
+   TLegendEntry* entry = leg->AddEntry(dataObs, "Data","lp");
+   entry->SetMarkerStyle(20);
+   
+   entry = leg->AddEntry(bgrfit, "Background model","l");
+   entry->SetLineColor(4);
+   entry->SetLineWidth(2);
+
+   leg->AddEntry(oneSigmaBand,"#pm1 st. dev.","f");
+   leg->AddEntry(twoSigmaBand,"#pm2 st. dev.","f");
+
+   leg->AddEntry(hMasssig[iproc][5], "Expected signal #times 10","l");
+
+   leg->Draw();
+   c->Update();
+   c->Modified();
+   c->Update();
+
+   if(drawPulldistribution){
+     RooPlot* frame2 = fX->frame(Title("Pull distribution")) ;
+     frame2->addPlotable(hpull,"P") ;
+   
+     pad2->cd();
+     gPad->SetLeftMargin(0.15);
+     frame2->GetYaxis()->SetTitleOffset(1.6);
+     frame2->SetMinimum(-5);
+     frame2->Draw();
+     TLine *l = new TLine(xmin,0,170,0);
+     l->SetLineWidth(2);
+     l->SetLineColor(2);
+     l->Draw("same");     
+   }
+   
+   char *outfilename = new char[100];
+   char dirName[100] = "plots";
+  
+   string scat(cats);
+   sprintf(outfilename,"%s/%s.gif",dirName, (schannel+"_"+scat).c_str());
+   c->Print(outfilename);
+   
+   sprintf(outfilename,"%s/%s.pdf",dirName, (schannel+"_"+scat).c_str());
+   c->Print(outfilename);
+
+   sprintf(outfilename,"%s/%s.root",dirName, (schannel+"_"+scat).c_str());
+   c->Print(outfilename);
+
+}
+   
 
 //*******************************************************************************************************************************
 void myBkgFit(){
