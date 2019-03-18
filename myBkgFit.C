@@ -31,7 +31,7 @@
 
 #include "RooAbsArg.h"
 
-#include "CalcSigma.C" ///for eff sigma calc
+//#include "CalcSigma.C" ///for eff sigma calc
 
 
 #include "flashggFinalFit/Background/interface/PdfModelBuilder.h"
@@ -61,7 +61,7 @@
 #include <fitting_functions/RooStepBernstein.h>
 
 #include "RooHist.h"
-#include "CMS_lumi.C"
+//#include "CMS_lumi.C"
 #include "TLegend.h"
 
 #include "TLegendEntry.h"
@@ -98,21 +98,22 @@ double blind_max = 130;
 double mylumi =36460; //pb-1
 
 RooAbsData* statAn::fill_events(TH1* hMass, const char* filename, double trigEff, int cat, bool usewei){
-  TFile* fi = TFile::Open(filename);
-   if (!fi || fi->IsZombie())
-      FATAL("TFile::Open() failed");
+  //TFile* fi = TFile::Open(filename);
+   //if (!fi || fi->IsZombie())
+      //FATAL("TFile::Open() failed");
 	
   //TDirectory * dir = (TDirectory*)fi->Get("diPhoAna");
   //TTree *tree;
   //dir->GetObject("DiPhotonTree",tree);
 	
   TTree* tree = dynamic_cast<TTree*> (fi->Get("diPhoAna/diPhotonTree"));
-  if (!tree) FATAL("TFile::Get() failed");
+  //if (!tree) FATAL("TFile::Get() failed");
   
   Int_t category;
   float hzg_mass;
   float puwei;	
-	
+
+  RootDataSet* rooMass;
   rooMass = new RooDataSet("rooMass", "", RooArgSet(*fX));
   for (Long64_t ev = 0; ev < tree->GetEntriesFast(); ev++) {
     *fX = hzg_mass;	  
@@ -141,10 +142,8 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
 
   cout<<"Model is "<<model<<endl;
   
-  
   else if(model=="RooPolynomial"){
     
-
     coeflist = new RooArgList;
     cout<<"inside RooPolynomial"<<endl;
 
@@ -155,10 +154,7 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     
     //RooExtendPdf bgrfit("fit", "", bgrfit1, *fPar[0], "our_window");
     bgrfit_ext = new  RooExtendPdf(Form("fit_%d_model%s",poldeg,model.c_str()), "", *bgrfit1, *fPar[0], "our_window");
-    
- 
-    
-    
+   
     cout<<"Now fitting with bgrfit"<<endl;
     
     rfit = bgrfit_ext->fitTo(*dataObs,
@@ -180,12 +176,9 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     bgrfit->Print();
     cout<<"-----------------------Printed the function---------------------------"<<endl;
 
-
   }//if(model=="RooPolynomial")
-
-
   
-  
+	
   ////Exp
   else if(model=="Exp"){
     cout<<"inside Exp"<<endl;
