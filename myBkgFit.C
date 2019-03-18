@@ -188,8 +188,6 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
   
   ////Exp
   else if(model=="Exp"){
-    
-
     cout<<"inside Exp"<<endl;
 
     RooAbsPdf *bgrfit1 = pdfsModel.getExponentialSingle(Form("expo_model%s",model.c_str()),poldeg);
@@ -202,9 +200,6 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     
     //RooExtendPdf bgrfit("fit", "", bgrfit1, *fPar[0], "our_window");
     bgrfit_ext = new  RooExtendPdf(TString::Format("fit_model%s",model.c_str()), "", *bgrfit1, *fPar[0], "our_window");
-    
- 
-    
     
     cout<<"Now fitting with bgrfit"<<endl;
     
@@ -231,21 +226,15 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
 
   ///power law
   if(model=="Pow") {
-
-
     cout<<"inside Pow"<<endl;
     
     RooAbsPdf *bgrfit1 = pdfsModel.getPowerLawSingle(Form("bgrfit1_model%s",model.c_str()),poldeg);
-    
-      
+         
     //fPar[0] = new RooRealVar(TString::Format("norm_model%s",model.c_str()), "", 200., 0., 1e+6);
     fPar[0] = new RooRealVar(TString::Format("norm_model%s",model.c_str()), "", 200., 0., 1e+10);
     
     //RooExtendPdf bgrfit("fit", "", bgrfit1, *fPar[0], "our_window");
-    bgrfit_ext = new  RooExtendPdf(TString::Format("fit_model%s",model.c_str()), "", *bgrfit1, *fPar[0], "our_window");
-    
- 
-    
+    bgrfit_ext = new  RooExtendPdf(TString::Format("fit_model%s",model.c_str()), "", *bgrfit1, *fPar[0], "our_window");    
     
     cout<<"Now fitting with bgrfit"<<endl;
     
@@ -265,32 +254,22 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     cout<<"====================Inside hte function printing bgrfit1===================="<<endl;
     bgrfit->Print();
     cout<<"-----------------------Printed the function---------------------------"<<endl;
-
-
-    
-
 
   }//if(model=="Pow")
 
 
   ///Laurent
   if(model=="Laurent") {
-
-
     cout<<"inside Laurent"<<endl;
     
-    RooAbsPdf *bgrfit1 = pdfsModel.getLaurentSeries(Form("bkgfit1_model%s",model.c_str()),poldeg); 
-    
+    RooAbsPdf *bgrfit1 = pdfsModel.getLaurentSeries(Form("bkgfit1_model%s",model.c_str()),poldeg);    
       
     //fPar[0] = new RooRealVar(TString::Format("norm_model%s",model.c_str()), "", 200., 0., 1e+6);
     fPar[0] = new RooRealVar(TString::Format("norm_model%s",model.c_str()), "", 200., 0., 1e+10);
     
     //RooExtendPdf bgrfit("fit", "", bgrfit1, *fPar[0], "our_window");
     bgrfit_ext = new  RooExtendPdf(TString::Format("fit_model%s",model.c_str()), "", *bgrfit1, *fPar[0], "our_window");
-    
- 
-    
-    
+       
     cout<<"Now fitting with bgrfit"<<endl;
     
     rfit = bgrfit_ext->fitTo(*dataObs,
@@ -309,10 +288,6 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     cout<<"====================Inside hte function printing bgrfit1===================="<<endl;
     bgrfit->Print();
     cout<<"-----------------------Printed the function---------------------------"<<endl;
-
-
-    
-
 
   }//if(model=="Pow")
 
@@ -324,6 +299,9 @@ void statAn::mybkgfit(double xmin, double xmax, int icat, string schannel){
     
   }
 }
+
+//********************************************************************************************************************
+
    int W = 800;
    int H = 600;
    
