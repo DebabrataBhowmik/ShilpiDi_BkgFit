@@ -1,7 +1,5 @@
 void statAn::simplemkdatacard(const char* channel, int cat)
 {
-  //int nBinsForMass = 55;
-  //bool blind = true;
   bool blind = false;
 
   double num_zero_shapesys = 0.00001;
@@ -63,18 +61,9 @@ void statAn::simplemkdatacard(const char* channel, int cat)
      }//while(!datafile.eof())
    }//if(cat>0 && schannel == "mmg")
 
-
-
-     
-   
    //////////////////////electron, photons energy scale
    
    ///1. electron channel
-   ifstream fsys_emscale_e;
-   ifstream fsys_emreso_e; 
-   
-   double sysem_mean_arr_e[10][20];
-   double sysem_reso_arr_e[10][20];
    
    
    ///scale
@@ -344,369 +333,13 @@ void statAn::simplemkdatacard(const char* channel, int cat)
        
      }//while(!datafile.eof())
      
-   
-       ////reso
-       //syselepho_hzg_ele_scale_cat1_8TeV.txt
-     //fsys_phoreso_m.open(TString::Format("syselepho_hzg_ele_smear_%s_8TeV_Objpho.txt",cats), ifstream::in );
-     fsys_phoreso_m.open(TString::Format("syselepho_hzg_mu_smear_%s_8TeV_Objpho.txt",cats), ifstream::in );
-     while(!fsys_phoreso_m.eof()){
-       
-       string proc;
-       int mass;
-       double syspho_reso_m;
-       
-       fsys_phoreso_m >> proc >> mass >> syspho_reso_m;
-       
-     
-       //cout<<"reading pho reso file "<< TString::Format("syselepho_hzg_ele_smear_%s_8TeV_Objpho.txt",cats)<<"... proc mass sysrochor_mean "<<proc<<" "<<mass<<" "<<syspho_reso_m<<endl;
-       cout<<"reading pho reso file "<< TString::Format("syselepho_hzg_mu_smear_%s_8TeV_Objpho.txt",cats)<<"... proc mass sysrochor_mean "<<proc<<" "<<mass<<" "<<syspho_reso_m<<endl;
-     int iproc = -99;
-     if(proc == "ggH") iproc = 0;
-     if(proc == "VBF") iproc = 1;
-     if(proc == "ttH_VH") iproc = 2;
-     
-     int imass = -99;
-     if(mass == 120) imass = 0;
-     if(mass == 125) imass = 1;
-     if(mass == 130) imass = 2;
-     
-     syspho_reso_arr_m[iproc][5*imass] = syspho_reso_m;
      
      }//while(!datafile.eof())
 
    }//if(cat>0 && schannel == "eeg")
 
 
-
-
-
-
    //////////////////////////////////////////END of systematics due to e-pho difference////////////////////////////////
-
-   /////JEC
-
-
-   double sys_jec[10][20];
-   //if(cat>=1&&cat<=5){
-   if(cat>0){
-     ifstream fsys_jet; //sys_ele_JEC_8TeV.txt
-
-     string name;
-     if(schannel=="eeg")
-       name="ele";
-     
-     else if(schannel=="mmg")
-       name="mu";
-     
-     else name = "ele_mu";
-     
-     fsys_jet.open(TString::Format("sys_%s_JEC_8TeV.txt",name.c_str()), ifstream::in );
-     while(!fsys_jet.eof()){
-       
-       string proc;
-       int mass;
-       double sys;
-       int icat;
-       
-       fsys_jet >> proc >> mass >> icat >> sys;
-       
-       cout<<"reading JEC file "<<TString::Format("sys_%s_JEC_8TeV.txt",schannel.c_str())<<"... proc mass sysrochor_mean "<<proc<<" "<<mass<<" "<<icat<<" "<<sys<<endl;
-     
-       int iproc = -99;
-       if(proc == "ggH") iproc = 0;
-       if(proc == "VBF") iproc = 1;
-       if(proc == "ttH_VH") iproc = 2;
-     
-       int imass = -99;
-       if(mass == 120) imass = 0;
-       if(mass == 125) imass = 1;
-       if(mass == 130) imass = 2;
-       
-       if(icat==cat)
-	 sys_jec[iproc][5*imass] = sys;
-     
-     }//while(!datafile.eof())
-     
-   }
-
-
-   ////JER
-   double sys_jer[10][20];
-   //if(cat>=1&&cat<=5){
-   if(cat>0){
-     ifstream fsys_jet; //sys_ele_JEC_8TeV.txt
-
-     string name;
-     if(schannel=="eeg")
-       name="ele";
-     
-     else if(schannel=="mmg")
-       name="mu";
-     
-     else name = "ele_mu";
-     
-     fsys_jet.open(TString::Format("sys_%s_JER_8TeV.txt",name.c_str()), ifstream::in );
-     while(!fsys_jet.eof()){
-       
-       string proc;
-       int mass;
-       double sys;
-       int icat;
-       
-       fsys_jet >> proc >> mass >> icat >> sys;
-       
-       cout<<"reading JER file "<<TString::Format("sys_%s_JER_8TeV.txt",schannel.c_str())<<"... proc mass sysrochor_mean "<<proc<<" "<<mass<<" "<<icat<<" "<<sys<<endl;
-     
-       int iproc = -99;
-       if(proc == "ggH") iproc = 0;
-       if(proc == "VBF") iproc = 1;
-       if(proc == "ttH_VH") iproc = 2;
-     
-       int imass = -99;
-       if(mass == 120) imass = 0;
-       if(mass == 125) imass = 1;
-       if(mass == 130) imass = 2;
-       
-       if(icat==cat)
-	 sys_jer[iproc][5*imass] = sys;
-     
-     }//while(!datafile.eof())
-   }//if(cat>0)
-
-   //////////////////////////////////END OF JER/////////////////////
-
-
-
-   ////////////////////////////////UE/////////////////////
-
-   double sys_ue[10][20];
-   if(cat>=0){ ///= after approval
-     ifstream fsys_ue; //
-
-     for(int ip=0; ip<7; ip++){ 
-       if(cat==0){
-	 sys_ue[ip][5] = 0;
-	 sys_ue[ip][0] = 0;
-	 sys_ue[ip][10] = 0;
-       }
-     }
-
-     string name;
-     if(schannel=="eeg")
-       name="ele";
-     
-     else if(schannel=="mmg")
-       name="mu";
-     
-     else name = "ele_mu";
-     
-     fsys_ue.open(TString::Format("sys_hzg_%s_UE_8TeV.txt",name.c_str()), ifstream::in );
-     while(!fsys_ue.eof()){
-       
-       string proc;
-       int mass;
-       double sys;
-       int icat;
-       
-       fsys_ue >> proc >> mass >> icat >> sys;
-       
-       cout<<"reading UE file "<<TString::Format("sys_hzg_%s_UE_8TeV.txt",name.c_str())<<"... proc mass sysUE "<<proc<<" "<<mass<<" "<<icat<<" "<<sys<<endl;
-     
-       int iproc = -99;
-       if(proc == "ggH") iproc = 0;
-       if(proc == "VBF") iproc = 1;
-       if(proc == "ttH") iproc = 4;
-       if(proc == "WminusH") iproc = 5;
-       if(proc == "WplusH") iproc = 6;
-       if(proc == "ZH") iproc = 3;
-     
-       int imass = -99;
-       if(mass == 120) imass = 0;
-       if(mass == 125) imass = 1;
-       if(mass == 130) imass = 2;
-       
-       if(icat==cat)
-	 {
-	   sys_ue[iproc][5*imass] = sys;
-
-	   ///since it is estimated only for 125 GeV
-	   sys_ue[iproc][0] = sys;
-	   sys_ue[iproc][10] = sys;
-	 }
-     
-       ///after approval
-       if(cat==0 && (icat==1||icat==2||icat==3||icat==4||icat==5||icat==10)){
-
-	 sys_ue[iproc][5*imass] += sys/6.;
-	 ///since it is estimated only for 125 GeV
-	 sys_ue[iproc][0] += sys/6.;
-	 sys_ue[iproc][10] += sys/6.;
-	 
-	 cout<<"UE for cat 0 === cat : icat : sys : tot sys till now "<<cat<<" "<<icat<<" "<<sys/6.<<" "<<sys_ue[iproc][5*imass]<<endl;
-       }
-
-
-     }//while(!datafile.eof())
-
-
-     for(int ii=0; ii<3; ii++){
-       ///Wh = avg(W+H and W-H)
-
-
-       sys_ue[2][5*ii] = (sys_ue[5][5*ii] + sys_ue[6][5*ii])/2.; 
-     }
-
-   }
-
-
-   for(int ip=0; ip<2; ip++){
-
-     cout<<"UE sys for 125 for cat "<<cat<<" is "<<sys_ue[ip][5]<<endl;
-   }
-
-   //////////////////////END OF UE////////////////////////////
-
-
-   /////////////////////////////////////PS ///////////////////////////
-   double sys_ps[10][20];
-   if(cat>=0){ //= after approval
-     ifstream fsys_ps; //
-
-     for(int ip=0; ip<7; ip++){ 
-       if(cat==0){
-	 sys_ps[ip][5] = 0;
-	 sys_ps[ip][0] = 0;
-	 sys_ps[ip][10] = 0;
-       }
-     }
-
-     string name;
-     if(schannel=="eeg")
-       name="ele";
-     
-     else if(schannel=="mmg")
-       name="mu";
-     
-     else name = "ele_mu";
-     
-     fsys_ps.open(TString::Format("sys_hzg_%s_PS_8TeV.txt",name.c_str()), ifstream::in );
-     while(!fsys_ps.eof()){
-       
-       string proc;
-       int mass;
-       double sys;
-       int icat;
-       
-       fsys_ps >> proc >> mass >> icat >> sys;
-
-       cout<<"reading PS file "<<TString::Format("sys_hzg_%s_PS_8TeV.txt",name.c_str())<<"... proc mass sysPS "<<proc<<" "<<mass<<" "<<icat<<" "<<sys<<endl;       
-
-     
-       int iproc = -99;
-       if(proc == "ggH") iproc = 0;
-       if(proc == "VBF") iproc = 1;
-       if(proc == "ttH") iproc = 4;
-       if(proc == "WminusH") iproc = 5;
-       if(proc == "WplusH") iproc = 6;
-       if(proc == "ZH") iproc = 3;
-     
-       int imass = -99;
-       if(mass == 120) imass = 0;
-       if(mass == 125) imass = 1;
-       if(mass == 130) imass = 2;
-       
-       if(icat==cat)
-	 {
-	   sys_ps[iproc][5*imass] = sys;
-
-	   ///since it is estimated only for 125 GeV
-	   sys_ps[iproc][0] = sys;
-	   sys_ps[iproc][10] = sys;
-	 }
-
-       if(cat==0 && (icat==1||icat==2||icat==3||icat==4||icat==5||icat==10)){
-
-	 sys_ps[iproc][5*imass] += sys/6.;
-	 ///since it is estimated only for 125 GeV
-	 sys_ps[iproc][0] += sys/6.;
-	 sys_ps[iproc][10] += sys/6.;
-	 
-	 cout<<"PS for cat 0 === cat : icat : sys : tot sys till now "<<cat<<" "<<icat<<" "<<sys/6.<<" "<<sys_ps[iproc][5*imass]<<endl;
-       }
-
-     
-     }//while(!datafile.eof())
-
-
-   for(int ip=0; ip<2; ip++){
-
-     cout<<"PS sys for 125 for cat "<<cat<<" is "<<sys_ps[ip][5]<<endl;
-   }
-
-
-     for(int ii=0; ii<3; ii++){
-       ///Wh = avg(W+H and W-H)
-
-
-       sys_ps[2][5*ii] = (sys_ps[5][5*ii] + sys_ps[6][5*ii])/2.; 
-     }
-
-   }
-   ////////////////////////////////////////END OF PS/////////////////
-
-   /////////////////////////////Due to R9/////////////////////////////////
-
-   double sys_r9[10][20];
-   if(cat>0){
-     ifstream fsys_r9; //
-
-     string name;
-     if(schannel=="eeg")
-       name="ele";
-     
-     else if(schannel=="mmg")
-       name="mu";
-     
-     //else name = "ele_mu";
-     else name = "ele";
-     
-     fsys_r9.open(TString::Format("sys_%s_R9_8TeV.txt",name.c_str()), ifstream::in );
-     while(!fsys_r9.eof()){
-       
-       string proc;
-       int mass;
-       double sys;
-       int icat;
-       
-       fsys_r9 >> proc >> mass >> icat >> sys;
-       
-       cout<<"reading R9 file "<<TString::Format("sys_%s_R9_8TeV.txt",schannel.c_str())<<"... proc mass sys_xx_R9 "<<proc<<" "<<mass<<" "<<icat<<" "<<sys<<endl;
-     
-       int iproc = -99;
-       if(proc == "ggH") iproc = 0;
-       if(proc == "VBF") iproc = 1;
-       if(proc == "ttH_VH") iproc = 2;
-     
-       int imass = -99;
-       if(mass == 120) imass = 0;
-       if(mass == 125) imass = 1;
-       if(mass == 130) imass = 2;
-       
-       if(icat==cat)
-	 sys_r9[iproc][5*imass] = sys;
-     
-       if(cat>=5) {
-	 sys_r9[iproc][5*imass] = 0;
-       }
-
-     }//while(!datafile.eof())
-
-   }
-
-
-
-   ////////////////////////////////END Of DUE TO R9//////////////////
-
 
 
    Printf("Processing channel=%s, category=%s ...", channel, cats);
@@ -735,10 +368,7 @@ void statAn::simplemkdatacard(const char* channel, int cat)
    hDataObs.SetYTitle("Entries");
 
    fX = new RooRealVar("x", "", xmin, xmax); 
-   //fX->setBins(1000);
-   //fX->setBins(500);
    fX->setBins(700);
-
 
    TString filename;
    
@@ -816,29 +446,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
    //RooGaussStepBernstein *bgrfit = new RooGaussStepBernstein();
    //bgrfit = mybkgfit("RooGaussStepBernstein", poldeg);
    mybkgfit(xmin, xmax,cat, schannel);
-   //////try importing here//////////////////
-
-   //bkgfit1_modelLaurent_l1_bgr_cat1
-   
-   //bgrfit1_modelPow_p1
-   //bgrfit1_model%s,model.c_str()"%s_p%d"
-
-   
-   ///set the parameters constant  - is it the right way? - CHECK
-   /*if(model=="RooGaussStepBernstein"){
-     mean->setConstant(true);
-     sigma->setConstant(true);
-     stepval->setConstant(true);
-   
-   
-     if(hDataObs.Integral()!=0){
-       for(int ipol=1; ipol<=poldeg; ipol++){
-	 
-	 pol[ipol]->setConstant(true); 
-       }
-     }
-   }
-   */
 
    cout<<"===DONE WITH THE FITTING"<<endl;
    bgrfit->Print();
@@ -1184,17 +791,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
        cout<<"sys_lep : sys_pho : % of sys_lep : % of sys_pho : % tot : hmass : "<<sqrt(sys_lep)<<" "<<sqrt(sys_pho)<<" "<<sigSysonExp_lep[p][m*5]<< " "<<sigSysonExp_pho[p][m*5]<<" "<<sigTotSys[p][m*5]<< " "<<hMass.Integral()<<endl;
        cout<<"===HLT sys - "<<sigTothltSys[p][m*5]<<endl;
 
-       //sigSysEff[p][m*5] = sqrt( pow(sys_lep,2) + pow(sys_pho,2) + pow(sys_pu,2) );
-
-       //includes lumi
-       //sigSysEff[p][m*5] = sqrt( pow(sys_lep,2) + pow(sys_pho,2) + pow(sys_pu,2) +pow(2.7*hMass.Integral()/100.,2) );
-
-       //sigSysEff[p][m*5] = sqrt( pow(sys_lep,2) + pow(sys_pho,2) + pow(sys_pu,2) );
-
-
-       ///idsys gives square  - Till 7th Feb, 2018 - for approval
-       //sigSysEff[p][m*5] = sqrt( sys_lep + sys_pho + pow(sys_pu,2) );
-
        ///include HLT eff and UE/PS - after approval - 7th Feb, 2018
        cout<<"after approval numbers: sys_lep : sys_pho : sus_pu : sys_hlt : UE : PS "<<sqrt(sys_lep)<<" "<<sqrt(sys_pho)<<" "<<sys_pu<<" "<<sqrt(sys_hlt)<<" " << sys_ue[p][m*5]*hMass.Integral() << " "<< sys_ps[p][m*5]*hMass.Integral()<<endl;
        cout<<"individual numbers : UE : PS : integ : "<<sys_ue[p][m*5]<<" "<<sys_ps[p][m*5]<<" "<<hMass.Integral()<<endl;
@@ -1241,44 +837,10 @@ void statAn::simplemkdatacard(const char* channel, int cat)
        //TString sfx = TString::Format("sig_%s_%d", proc[p], mass[m]);
        TString sfx = TString::Format("sig_%s_%d_cat%d", proc[p], mass,cat);
 
-       // - rename parameters of the PDF;
-       // - declare parameters of the PDF to be constants (otherwise the
-       //   parameters will be considered as freely floating, and the combine
-       //   tool will produce weird results)
-       
-
-       /*for (int i = 0; i < sfit->GetNPar(); i++) {
-	 const char* name = sfit->GetPar(i)->GetName();
-	 sfit->GetPar(i)->SetName(TString::Format("CMS_hzg_%s_%s_8TeV_%s_%s",
-	 channel, cats, name, sfx.Data()));
-	 sfit->GetPar(i)->setConstant(true);
-         }
-       */
-       
-
        ///CHECK - set signal parameters to const
        
        rooMassSig[p][m*5]->SetName(TString::Format("signaldata_%s_%d_cat%d",proc[p], mass, cat));
        wspace.import(*rooMassSig[p][m*5],RooFit::RenameVariable("x", "CMS_hzg_mass_13TeV"));
-       
-       
-
-
-       cout<<"Inside the signal mass loop for filling the data set"<<endl;
-       cout<<"=========Printing the dataset information========="<<endl;
-       rooMassSig[p][m*5]->Print();
-       cout<<"=========Printed the dataset information========="<<endl;
-
-       // set names for the nuisance parameters of energy scale and resolution
-       /*sfit->GetPar(sfit->GetNPar() - 2)->SetName(TString::Format("CMS_scale_%s", channel));
-       sfit->GetPar(sfit->GetNPar() - 1)->SetName(TString::Format("CMS_res_%s", channel));
-       */
-
-       
-         // - add signal PDF into the workspace under the name "pdf_sig_...";
-         // - add suffix "_sig_..." to all subPDFs;
-         // - connect the PDF's X axis variable to the X axis variable of data_obs
-         // - connect the nuisance parameters of different signal PDFs together
 
        cout<<"setting the signal pdf name "<<endl;
        
