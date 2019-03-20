@@ -1508,13 +1508,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
 
 	 wspace.factory(Form("CMS_hzg_delta_eleEM_sigma_chan%d_m%d_cat%d[0]",p,5*m,cat));
 
-	 /*wspace.factory(Form("prod::mean_corr_chan%d_m%d_cat%d(sig_mean1_chan%d_m%d_cat%d, sum::CMS_hzg_delta_ele_mean_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_mean_chan%d_m%d_cat%d, CMS_hzg_delta_elePho_mean_chan%d_m%d_cat%d) )",p,5*m,cat,p,5*m,cat,p,5*m,cat, p,5*m,cat, p,5*m,cat));
-	 wspace.factory(Form("prod::sigma_corr_chan%d_m%d_cat%d(sig_sigma1_chan%d_m%d_cat%d, sum::CMS_hzg_delta_ele_sigma_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_sigma_chan%d_m%d_cat%d, CMS_hzg_delta_elePho_sigma_chan%d_m%d_cat%d) )",p,5*m,cat,p,5*m,cat,p,5*m,cat,  p,5*m,cat, p,5*m,cat));
-	 
-	 wspace.factory(Form("EDIT::newpdf_%s(pdf_%s,sig_mean1_chan%d_m%d_cat%d=mean_corr_chan%d_m%d_cat%d, sig_sigma1_chan%d_m%d_cat%d=sigma_corr_chan%d_m%d_cat%d)",sfx.Data(), sfx.Data(),p,5*m,cat,p,5*m,cat,p,5*m,cat,p,5*m,cat) );
-	 */
-
-
 	 wspace.factory(Form("prod::mean_corr_chan%d_m%d_cat%d(sig_mean1_chan%d_m%d_cat%d, sum::CMS_hzg_delta_ele_mean_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_mean_chan%d_m%d_cat%d) )",p,5*m,cat,p,5*m,cat,p,5*m,cat, p,5*m,cat));
 	 wspace.factory(Form("prod::sigma_corr_chan%d_m%d_cat%d(sig_sigma1_chan%d_m%d_cat%d, sum::CMS_hzg_delta_ele_sigma_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_sigma_chan%d_m%d_cat%d) )",p,5*m,cat,p,5*m,cat,p,5*m,cat,  p,5*m,cat));
 	 
@@ -1522,11 +1515,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
 
 	 
        }
-
-       /////for systematics on resolution and scale
-
-
-       //delete sfit;
        
      } // process and mass loops
    }//for (int p = 0; p < nprocess; p++)
@@ -1623,62 +1611,7 @@ void statAn::simplemkdatacard(const char* channel, int cat)
        
 	 // evaluate expected signal yield
 	 double norm = normfactor_SMHiggs_8TeV(channel, p, mass);
-	 //expected[p][m * 5 + k] = norm * sfit->GetPar(0)->getVal();
-	 
-	 ///extrapolate the eff - SJ
-	 expected[p][mm * 5 + k] = expected[p][5*mm] * a + b * expected[p][5*(mm+1)];
-	 
-	 //cout<<"Setting the element ("<<p<<","<<(m * 5 + k)<<")"
-	 //sigeff_All[p][mm * 5 + k] = expected[p][mm * 5 + k]/lumi;
-	 sigeff_All[p][mm * 5 + k] = sigeff_All[p][mm*5] * a + b * sigeff_All[p][5*(mm+1)];
-
-	 sigeff_ggf_vbf[mm * 5 + k] = sigeff_ggf_vbf[mm*5] * a + b * sigeff_ggf_vbf[5*(mm+1)];
-
-	 sigsys_ggf_vbf[mm * 5 + k] = sigsys_ggf_vbf[mm*5] * a + b * sigsys_ggf_vbf[5*(mm+1)];
-
-	 sigsys_ggf_vbf_theoryalso[mm * 5 + k] = sigsys_ggf_vbf_theoryalso[mm*5] * a + b * sigsys_ggf_vbf_theoryalso[5*(mm+1)];
-	 sigsys_ggf_vbf_theoryonly[mm * 5 + k] = sigsys_ggf_vbf_theoryonly[mm*5] * a + b * sigsys_ggf_vbf_theoryonly[5*(mm+1)];
-
-
-	 sigTotSys[p][mm * 5 + k] = sigTotSys[p][mm*5]* a + sigTotSys[p][(mm+1)*5] * b;
-       
-	 ///
-	 sigSysonExp_lep[p][mm * 5 + k] = sigSysonExp_lep[p][mm*5]* a + sigSysonExp_lep[p][(mm+1)*5] * b;
-	 sigSysonExp_pho[p][mm * 5 + k] = sigSysonExp_pho[p][mm*5]* a + sigSysonExp_pho[p][(mm+1)*5] * b;
-	 
-
-	 sigSysPU[p][mm * 5 + k] = sigSysPU[p][mm*5]* a + sigSysPU[p][(mm+1)*5] * b;
-
-	 sigTothltSys[p][mm * 5 + k] = sigTothltSys[p][mm*5]* a + sigTothltSys[p][(mm+1)*5] * b;
-
-	 
-	 //sigsys_ggf_vbf[mm * 5 + k] = sigsys_ggf_vbf[mm*5] * a + b * sigsys_ggf_vbf[5*(mm+1)]; 
-
-	 sigSysonEff_lep[p][mm * 5 + k] = sigSysonEff_lep[p][mm*5] * a + b * sigSysonEff_lep[p][5*(mm+1)];
-	 sigSysonEff_pho[p][mm * 5 + k] = sigSysonEff_pho[p][mm*5] * a + b * sigSysonEff_pho[p][5*(mm+1)];
-	 
-	 ///interpolate all the sys
-	 sys_jec[p][mm * 5 + k] = sys_jec[p][mm*5]* a + sys_jec[p][(mm+1)*5] * b;
-
-	 sys_ue[p][mm * 5 + k] = sys_ue[p][mm*5]* a + sys_ue[p][(mm+1)*5] * b;
-	 sys_ps[p][mm * 5 + k] = sys_ps[p][mm*5]* a + sys_ps[p][(mm+1)*5] * b;
-	 
-	 sysrochor_mean_arr[p][mm * 5 + k] = sysrochor_mean_arr[p][mm*5]* a + sysrochor_mean_arr[p][(mm+1)*5] * b;
-	 sysem_mean_arr_m[p][mm * 5 + k] = sysem_mean_arr_m[p][mm*5]* a + sysem_mean_arr_m[p][(mm+1)*5] * b;
-	 syspho_mean_arr_m[p][mm * 5 + k] = syspho_mean_arr_m[p][mm*5]* a + syspho_mean_arr_m[p][(mm+1)*5] * b;
-
-	 sysrochor_reso_arr[p][mm * 5 + k] = sysrochor_reso_arr[p][mm*5]* a + sysrochor_reso_arr[p][(mm+1)*5] * b;
-	 sysem_reso_arr_m[p][mm * 5 + k] = sysem_reso_arr_m[p][mm*5]* a + sysem_reso_arr_m[p][(mm+1)*5] * b;
-	 syspho_reso_arr_m[p][mm * 5 + k] = syspho_reso_arr_m[p][mm*5]* a + syspho_reso_arr_m[p][(mm+1)*5] * b;
-
-	 sysem_mean_arr_e[p][mm * 5 + k] = sysem_mean_arr_e[p][mm*5]* a + sysem_mean_arr_e[p][(mm+1)*5] * b;
-	 syspho_mean_arr_e[p][mm * 5 + k] = syspho_mean_arr_e[p][mm*5]* a + syspho_mean_arr_e[p][(mm+1)*5] * b;
-
-	 sysem_reso_arr_e[p][mm * 5 + k] = sysem_reso_arr_e[p][mm*5]* a + sysem_reso_arr_e[p][(mm+1)*5] * b;
-	 syspho_reso_arr_e[p][mm * 5 + k] = syspho_reso_arr_e[p][mm*5]* a + syspho_reso_arr_e[p][(mm+1)*5] * b;
-	 
-
-	 
+	 //expected[p][m * 5 + k] = norm * sfit->GetPar(0)->getVal(); 
 
 
 	 cout<<"========starting to interpolate now for mass "<<mass<<"================="<<endl;
@@ -1711,11 +1644,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
 	 wspace.factory(Form("CMS_hzg_delta_muonRochor_sigma_chan%d_m%d_cat%d[0]",p,5*mm+k,cat));
 
 
-	 /*wspace.factory(Form("prod::mean_corr_chan%d_m%d_cat%d(sig_mean1_chan%d_m%d_cat%d,sum::CMS_hzg_delta_muon_mean_chan%d_m%d_cat%d(1, CMS_hzg_delta_muonRochor_mean_chan%d_m%d_cat%d, CMS_hzg_delta_muonEM_mean_chan%d_m%d_cat%d, CMS_hzg_delta_muonPho_mean_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat, p,5*mm+k,cat, p,5*mm+k,cat,p,5*mm+k,cat));
-	 wspace.factory(Form("prod::sigma_corr_chan%d_m%d_cat%d(sig_sigma1_chan%d_m%d_cat%d, sum::CMS_hzg_delta_muon_sigma_chan%d_m%d_cat%d(1, CMS_hzg_delta_muonRochor_sigma_chan%d_m%d_cat%d, CMS_hzg_delta_muonEM_sigma_chan%d_m%d_cat%d, CMS_hzg_delta_muonPho_sigma_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat, p,5*mm+k,cat, p,5*mm+k,cat, p,5*mm+k,cat));
-	 wspace.factory(Form("EDIT::newpdf_%s(pdf_%s,sig_mean1_chan%d_m%d_cat%d=mean_corr_chan%d_m%d_cat%d, sig_sigma1_chan%d_m%d_cat%d=sigma_corr_chan%d_m%d_cat%d)",sfx.Data(), sfx.Data(),p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat) );
-	 */
-
 	 wspace.factory(Form("prod::mean_corr_chan%d_m%d_cat%d(sig_mean1_chan%d_m%d_cat%d,sum::CMS_hzg_delta_muon_mean_chan%d_m%d_cat%d(1, CMS_hzg_delta_muonRochor_mean_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat, p,5*mm+k,cat));
 	 wspace.factory(Form("prod::sigma_corr_chan%d_m%d_cat%d(sig_sigma1_chan%d_m%d_cat%d, sum::CMS_hzg_delta_muon_sigma_chan%d_m%d_cat%d(1, CMS_hzg_delta_muonRochor_sigma_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat, p,5*mm+k,cat));
 
@@ -1731,13 +1659,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
 
 	 wspace.factory(Form("CMS_hzg_delta_eleEM_sigma_chan%d_m%d_cat%d[0]",p,5*mm+k,cat));
 
-	 
-	 /*wspace.factory(Form("prod::mean_corr_chan%d_m%d_cat%d(sig_mean1_chan%d_m%d_cat%d,sum::CMS_hzg_delta_ele_mean_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_mean_chan%d_m%d_cat%d, CMS_hzg_delta_elePho_mean_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat, p,5*mm+k,cat, p,5*mm+k,cat));
-	 wspace.factory(Form("prod::sigma_corr_chan%d_m%d_cat%d(sig_sigma1_chan%d_m%d_cat%d,sum::CMS_hzg_delta_ele_sigma_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_sigma_chan%d_m%d_cat%d, CMS_hzg_delta_elePho_sigma_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat, p,5*mm+k,cat, p,5*mm+k,cat));
-	 wspace.factory(Form("EDIT::newpdf_%s(pdf_%s,sig_mean1_chan%d_m%d_cat%d=mean_corr_chan%d_m%d_cat%d, sig_sigma1_chan%d_m%d_cat%d=sigma_corr_chan%d_m%d_cat%d)",sfx.Data(), sfx.Data(),p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat) );
-	 */
-
-
 	 wspace.factory(Form("prod::mean_corr_chan%d_m%d_cat%d(sig_mean1_chan%d_m%d_cat%d,sum::CMS_hzg_delta_ele_mean_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_mean_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat, p,5*mm+k,cat));
 	 wspace.factory(Form("prod::sigma_corr_chan%d_m%d_cat%d(sig_sigma1_chan%d_m%d_cat%d,sum::CMS_hzg_delta_ele_sigma_chan%d_m%d_cat%d(1, CMS_hzg_delta_eleEM_sigma_chan%d_m%d_cat%d) )",p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat,p,5*mm+k,cat));
 
@@ -1746,49 +1667,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
        }
 
 
-	 /*
-	 rsig[p][mm*5+k]->SetName(Form("fitresult_%s_%d_cat%d",proc[p], mass, cat));
-	 if (wspace.import(*rsig[p][mm*5+k]))
-	   FATAL("RooWorkspace::import() failed");
-	 */
-
-	 // unique suffix
-	 
-	 
-	 // - rename parameters of the PDF;
-	 // - declare parameters of the PDF to be constants (otherwise the
-	 //   parameters will be considered as freely floating, and the combine
-	 //   tool will produce weird results)
-	 //for (int i = 0; i < sfit->GetNPar(); i++) {
-	 //const char* name = sfit->GetPar(i)->GetName();
-	 //sfit->GetPar(i)->SetName(TString::Format("CMS_hzg_%s_%s_8TeV_%s_%s",
-	 //channel, cats, name, sfx.Data()));
-	 //sfit->GetPar(i)->setConstant(true);
-	 //}
-	 
-	 // set names for the nuisance parameters of energy scale and resolution
-	 //sfit->GetPar(sfit->GetNPar() - 2)->SetName(TString::Format("CMS_scale_%s", channel));
-	 //sfit->GetPar(sfit->GetNPar() - 1)->SetName(TString::Format("CMS_res_%s", channel));
-
-
-	 //deleteSigPar(_nuisance);
-       
-       } // extrapolation
-     }//for (int mm = 0; mm< nsig; mm++)
-   }//for (int p = 0; p < nprocess; p++)
-
-
-
-
-   
-
-  //////end of the signal now//////////////
-
-
-
-
-
-   
 
    const char* tmpproc[nprocess] = {"ggH", "qqH", "WH", "ZH", "ttH"};
    for(int ip=0; ip<nprocess; ip++){
@@ -1825,174 +1703,7 @@ void statAn::simplemkdatacard(const char* channel, int cat)
    //for (int m = 0; m < 31; m++) {
    for (int m = 0; m < 11; m++) {
       int mass = 120 + m;
-      
-
-      /*
-      sigSysonExp_lep[0][m] = 1 + sigSysonExp_lep[0][m];
-      sigSysonExp_pho[0][m] = 1 + sigSysonExp_pho[0][m];
-      sigSysonExp_lep[1][m] = 1 + sigSysonExp_lep[1][m];
-      sigSysonExp_pho[1][m] = 1 + sigSysonExp_pho[1][m];
-      */
-
-      cout<<"mass is "<<mass<<endl;
-      TString datacard;
-      datacard += "# Datacard for the HZg analysis for limit setting\n";
-      datacard += "# National Central University, Taiwan\n";
-      datacard += "# " + timestamp + " (UTC)\n";
-      datacard += TString::Format("# Usage: combine -U -M Asymptotic -m %d datacard.txt\n", mass);
-      datacard += "#\n";
-      datacard += "imax 1  # number of final states\n";
-      datacard += "jmax *  # number of yields given below minus one\n";
-      datacard += "kmax *  # number of sources of systematical uncertainties (nuisance parameters)\n";
-      datacard += "------------------------------------------------------------------------------------------------------------\n";
-      //datacard += TString::Format("shapes  VBFH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-      //datacard += TString::Format("shapes  ggH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-      
-      //when energy/mom scale sys is applied  
-      //datacard += TString::Format("shapes  VBFH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-      //datacard += TString::Format("shapes  ggH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-
-      /*datacard += TString::Format("shapes  ZH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ZH_%d_%s\n", channel, cats, mass,cats);
-      datacard += TString::Format("shapes  WminusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_WminusH_%d_%s\n", channel, cats, mass,cats);
-      datacard += TString::Format("shapes  WplusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_WplusH_%d_%s\n", channel, cats, mass,cats);
-      datacard += TString::Format("shapes  ttH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ttH_%d_%s\n", channel, cats, mass,cats);
-      */
-
-
-      
-      //21 jan, 2017 - use ggF shape for other processes for cats 1-4 since these events yield is quite small
-      if(cat>=0&&cat<=4){
-
-	datacard += TString::Format("shapes  qqH_hzg         * for_datacards_hzg_qqH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-      datacard += TString::Format("shapes  ggH_hzg         * for_datacards_hzg_ggH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-
-      
-	datacard += TString::Format("shapes  ZH_hzg         * for_datacards_hzg_ZH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WminusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WplusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WH_hzg         * for_datacards_hzg_WH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ttH_hzg         * for_datacards_hzg_ttH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-      }
-
-
-      //21 jan, 2017 - use VBF shape for other processes for cats 5 since these events yield is quite small
-      if(cat==5){
-
-	datacard += TString::Format("shapes  qqH_hzg         * for_datacards_hzg_qqH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ggH_hzg         * for_datacards_hzg_ggH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-
-
-	datacard += TString::Format("shapes  ZH_hzg         * for_datacards_hzg_ZH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WminusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WplusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WH_hzg         * for_datacards_hzg_WH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ttH_hzg         * for_datacards_hzg_ttH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-      }
-      
-
-      if(cat==6789){
-	datacard += TString::Format("shapes  ZH_hzg         * for_datacards_hzg_ZH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ZH_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WminusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_WminusH_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WplusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_WplusH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WH_hzg         * for_datacards_hzg_WH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_WH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ttH_hzg         * for_datacards_hzg_ttH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ttH_%d_%s\n", channel, cats, mass,cats);
-
-	datacard += TString::Format("shapes  qqH_hzg         * for_datacards_hzg_qqH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ttH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ggH_hzg         * for_datacards_hzg_ggH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ZH_%d_%s\n", channel, cats, mass,cats);
-	
-      }
-
-
-      if(cat==10){
-	datacard += TString::Format("shapes  ZH_hzg         * for_datacards_hzg_ZH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WminusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	//datacard += TString::Format("shapes  WplusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WH_hzg         * for_datacards_hzg_WH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ttH_hzg         * for_datacards_hzg_ttH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-
-	datacard += TString::Format("shapes  qqH_hzg         * for_datacards_hzg_qqH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ggH_hzg         * for_datacards_hzg_ggH_%s_%s_13TeV.root hzg_workspace:newpdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	
-      }
-      
-
-      /*
-      //21 jan, 2017 - use ggF shape for other processes for cats 1-4 since these events yield is quite small
-      if(cat>=1&&cat<=4){
-	datacard += TString::Format("shapes  ZH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WminusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WplusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ttH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_ggH_%d_%s\n", channel, cats, mass,cats);
-      }
-      //21 jan, 2017 - use VBF shape for other processes for cats 5 since these events yield is quite small
-      if(cat==5){
-	datacard += TString::Format("shapes  ZH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WminusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  WplusH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-	datacard += TString::Format("shapes  ttH         * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_sig_VBF_%d_%s\n", channel, cats, mass,cats);
-      }
-      */
-      
-      
-      
-      datacard += TString::Format("shapes  bgr       * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:pdf_bgr_%s\n", channel, cats,cats);
-      datacard += TString::Format("shapes  data_obs  * for_datacards_hzg_%s_%s_13TeV.root hzg_workspace:data_obs_%s\n", channel, cats,cats);
-      
-      datacard += "------------------------------------------------------------------------------------------------------------\n";
-
-
-      //datacard += TString::Format("bin            %s\n", bin);
-      datacard += TString::Format("bin            %s\n", cats);
-      //datacard += TString::Format("observation    %d\n", observation);
-      datacard += TString::Format("observation    %d\n", -1);
-      cout<<"wrote about teh observation ... "<<endl;
-      datacard += "------------------------------------------------------------------------------------------------------------\n";
-      //datacard += TString::Format("bin            %-15s %-15s %-15s\n", bin, bin, bin);
-      /*datacard += TString::Format("bin            %-15s %-15s %-15s\n", cats, cats, cats);
-      datacard +=                 "process        VBFH            ggH             bgr\n";
-      datacard +=                 "process        -1              0               1\n";
-      datacard += TString::Format("rate           %-15f %-15f %-15f\n",
-				  //			  expected[1][m], expected[0][m], expectation);
-				  expected[1][m], expected[0][m], 1.0);
-      */
-
-      
-      cout<<"writing the process expectation"<<endl;
-      cout<<"ggF "<<expected[0][m]<<endl;
-      cout<<"VBF "<<expected[1][m]<<endl;
-      cout<<"WH "<<expected[2][m]<<endl;
-      cout<<"ZH "<<expected[3][m]<<endl;
-      cout<<"ttH "<<expected[4][m]<<endl;
-      //cout<<"W+H "<<expected[2][m]<<endl;
-      //cout<<"W-H "<<expected[3][m]<<endl;
-      //cout<<"ZH "<<expected[4][m]<<endl;
-      //cout<<"ttH "<<expected[5][m]<<endl;
-      
-      /*
-      datacard += TString::Format("bin            %-15s %-15s %-15s %-15s %-15s %-15s %-15s\n", cats, cats, cats,cats, cats,cats, cats);
-      datacard +=                 "process        ttH       ZH      WminusH        WplusH           VBFH            ggH             bgr\n";
-      datacard +=                 "process        -5        -4       -3             -2                -1             0               1\n";
-      cout<<"all the expectations ... "<<expected[0][m]<<" "<<expected[1][m]<<" "<<expected[2][m]<<" "<<expected[3][m]<<" "<<expected[4][m]<<" "<<expected[5][m]<<endl;
-      
-      datacard += TString::Format("rate           %-15f %-15f %-15f %-15f %-15f %-15f %-15f\n",
-				  expected[5][m], expected[4][m], expected[3][m], expected[2][m], expected[1][m], expected[0][m], 1.0);
-      */
-
-
-      datacard += TString::Format("bin            %-15s %-15s %-15s %-15s %-15s %-15s\n", cats, cats, cats,cats, cats,cats);
-      datacard +=                 "process        ttH_hzg       ZH_hzg        WH_hzg           qqH_hzg            ggH_hzg             bgr\n";
-      datacard +=                 "process       -4       -3             -2                -1             0               1\n";
-
-      //cout<<"all the expectations ... "<<expected[0][m]<<" "<<expected[1][m]<<" "<<expected[2][m]<<" "<<expected[3][m]<<" "<<expected[4][m]<<" "<<expected[5][m]<<endl;
-      cout<<"all the expectations ... "<<expected[0][m]<<" "<<expected[1][m]<<" "<<expected[2][m]<<" "<<expected[3][m]<<" "<<expected[4][m]<<endl;
-      
-      datacard += TString::Format("rate           %-15f %-15f %-15f %-15f %-15f %-15f\n",
-				  expected[4][m], expected[3][m], expected[2][m],  expected[1][m], expected[0][m], 1.0);
-
-      datacard += "------------------------------------------------------------------------------------------------------------\n";
-   
-      // theoretical uncertainties
-      
+ 
       ifstream in("theoretical_uncertainties_SM_Higgs.list");
       int count = 0; // simple error protection
       char line[10000];
@@ -2020,154 +1731,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
       if (count != 8) FATAL("theoretical uncertainties: line count != 8"); /// 8 when other unceratinties for ZH WH etc are ehre
 
    
-      // CMS uncertainties.
-      //
-      // NOTE: naming conventions are from
-      // https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/HiggsCombinationConventions?rev=18
-      datacard += "lumi_13TeV          lnN     1.025          1.025   1.025    1.025   1.025                -\n";
-      
-      if(schannel=="mmg"){
-	datacard += TString::Format("CMS_HLTeff_m_13TeV     lnN        %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1.013,1.013,1.013,1.013,1.013);
-      }
-      else{
-	datacard += TString::Format("CMS_HLTeff_e_13TeV     lnN        %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigTothltSys[4][m], 1+sigTothltSys[3][m], 1+sigTothltSys[2][m], 1+sigTothltSys[1][m], 1+sigTothltSys[0][m]);
-      }
-      
-      //datacard += TString::Format("CMS_IDeff_13TeV     lnN        %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigTotSys[4][m], 1+sigTotSys[3][m], 1+sigTotSys[2][m], 1+sigTotSys[1][m], 1+sigTotSys[0][m]);
-
-      if(schannel=="mmg"){
-	datacard += TString::Format("CMS_IDeff_m_13TeV     lnN        %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigSysonExp_lep[4][m], 1+sigSysonExp_lep[3][m], 1+sigSysonExp_lep[2][m], 1+sigSysonExp_lep[1][m], 1+sigSysonExp_lep[0][m]);
-      }
-      else{
-	datacard += TString::Format("CMS_IDeff_e_13TeV     lnN        %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigSysonExp_lep[4][m], 1+sigSysonExp_lep[3][m], 1+sigSysonExp_lep[2][m], 1+sigSysonExp_lep[1][m], 1+sigSysonExp_lep[0][m]);
-      }
-
-      datacard += TString::Format("CMS_IDeff_g_13TeV     lnN        %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigSysonExp_pho[4][m], 1+sigSysonExp_pho[3][m], 1+sigSysonExp_pho[2][m], 1+sigSysonExp_pho[1][m], 1+sigSysonExp_pho[0][m]);
-
-   
-      //datacard += TString::Format("CMS_PU_13TeV     lnN        %-15f          %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigSysPU[5][m], 1+sigSysPU[4][m], 1+sigSysPU[3][m], 1+sigSysPU[2][m], 1+sigSysPU[1][m], 1+sigSysPU[0][m]);
-
-      //datacard += TString::Format("CMS_hzg_PU_13TeV     lnN              %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigSysPU[4][m], 1+sigSysPU[3][m], 1+sigSysPU[2][m], 1+sigSysPU[1][m], 1+sigSysPU[0][m]);
-
-      datacard += TString::Format("CMS_PU_13TeV     lnN              %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sigSysPU[4][m], 1+sigSysPU[3][m], 1+sigSysPU[2][m], 1+sigSysPU[1][m], 1+sigSysPU[0][m]);
-
-
-      //if(cat!=6789) datacard += TString::Format("CMS_JEC_13TeV     lnN        %-15f          %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sys_jec[5][m], 1+sys_jec[4][m], 1+sys_jec[3][m], 1+sys_jec[2][m], 1+sys_jec[1][m], 1+sys_jec[0][m]);
-
-      //if(cat!=6789) datacard += TString::Format("CMS_JEC_13TeV     lnN      %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sys_jec[4][m], 1+sys_jec[3][m], 1+sys_jec[2][m], 1+sys_jec[1][m], 1+sys_jec[0][m]);
-      
-      ///dont include it for lepton tagged
-      if(cat!=6789) {
-	
-	datacard += TString::Format("CMS_JEC_13TeV     lnN      %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sys_jec[4][m], 1+sys_jec[3][m], 1+sys_jec[2][m], 1+sys_jec[1][m], 1+sys_jec[0][m]);
-
-	datacard += TString::Format("CMS_JER_13TeV     lnN      %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sys_jer[4][m], 1+sys_jer[3][m], 1+sys_jer[2][m], 1+sys_jer[1][m], 1+sys_jer[0][m]);
-
-	///UE
-	datacard += TString::Format("CMS_hzg_UE_13TeV     lnN      %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sys_ue[4][m], 1+sys_ue[3][m], 1+sys_ue[2][m], 1+sys_ue[1][m], 1+sys_ue[0][m]);
-
-	///PS
-	datacard += TString::Format("CMS_hzg_PS_13TeV     lnN      %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sys_ps[4][m], 1+sys_ps[3][m], 1+sys_ps[2][m], 1+sys_ps[1][m], 1+sys_ps[0][m]);
-
-
-      }
-
-      
-      ///R9
-      if(cat>=1 && cat<=4){
-	datacard += TString::Format("CMS_R9_13TeV     lnN      %-15f         %-15f    %-15f          %-15f          %-15f         -\n",1+sys_r9[2][m], 1+sys_r9[2][m], 1+sys_r9[2][m], 1+sys_r9[1][m], 1+sys_r9[0][m]);
-      }
-      
-      int imass = m;
-      if(mass>=120&&mass<125) imass = 0;
-      if(mass>=125 && mass<130) imass = 5;
-
-
-      
-      if(schannel == "mmg"){
-
-	for(int isys=0; isys<=5; isys++){
-	  
-	  /*if(sysrochor_mean_arr[isys][imass]==0) sysrochor_mean_arr[isys][imass] = 0.001;
-	  if(sysem_mean_arr_m[isys][imass]==0) sysem_mean_arr_m[isys][imass] = 0.001;
-	  if(syspho_mean_arr_m[isys][imass]==0) syspho_mean_arr_m[isys][imass] = 0.001;
-	  if(sysrochor_reso_arr[isys][imass]==0) sysrochor_reso_arr[isys][imass] = 0.001;
-	  if(sysem_reso_arr_m[isys][imass]==0) sysem_reso_arr_m[isys][imass] = 0.001;
-	  if(syspho_reso_arr_m[isys][imass]==0) syspho_reso_arr_m[isys][imass] = 0.001;
-	  */
-
-	  
-	  if(sysrochor_mean_arr[isys][imass]==0) sysrochor_mean_arr[isys][imass] = num_zero_shapesys;
-	  if(sysem_mean_arr_m[isys][imass]==0) sysem_mean_arr_m[isys][imass] =  num_zero_shapesys;
-	  if(syspho_mean_arr_m[isys][imass]==0) syspho_mean_arr_m[isys][imass] = num_zero_shapesys;
-
-
-	  if(sysrochor_reso_arr[isys][imass]==0) sysrochor_reso_arr[isys][imass] = num_zero_shapesys;
-	  if(sysem_reso_arr_m[isys][imass]==0) sysem_reso_arr_m[isys][imass] =  num_zero_shapesys;
-	  if(syspho_reso_arr_m[isys][imass]==0) syspho_reso_arr_m[isys][imass] = num_zero_shapesys;
-	  
-
-	}
-
-	datacard += TString::Format("CMS_llg_delta_muonRochor_mean_chan0_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_mean_arr[0][imass]);
-	datacard += TString::Format("CMS_llg_delta_muonRochor_mean_chan1_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_mean_arr[1][imass] );
-	datacard += TString::Format("CMS_llg_delta_muonRochor_mean_chan2_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_mean_arr[2][imass]);
-	datacard += TString::Format("CMS_llg_delta_muonRochor_mean_chan3_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_mean_arr[3][imass] );
-	datacard += TString::Format("CMS_llg_delta_muonRochor_mean_chan4_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_mean_arr[4][imass]);
-	//datacard += TString::Format("CMS_hzg_delta_muonRochor_mean_chan5_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_mean_arr[5][imass] );
-
-	
-	datacard += TString::Format("CMS_llg_delta_muonRochor_sigma_chan0_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_reso_arr[0][imass]);
-	datacard += TString::Format("CMS_llg_delta_muonRochor_sigma_chan1_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_reso_arr[1][imass]);
-	datacard += TString::Format("CMS_llg_delta_muonRochor_sigma_chan2_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_reso_arr[2][imass]);
-	datacard += TString::Format("CMS_llg_delta_muonRochor_sigma_chan3_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_reso_arr[3][imass]);
-	datacard += TString::Format("CMS_llg_delta_muonRochor_sigma_chan4_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_reso_arr[4][imass]);
-	//datacard += TString::Format("CMS_hzg_delta_muonRochor_reso_chan5_m%d_cat%d    param 0 %-15f\n",  m, cat, sysrochor_reso_arr[5][imass]);
-
-
-
-	}
-
-
-      if(schannel == "eeg" || schannel=="eeg_mmg"){
-
-	for(int isys=0; isys<=5; isys++){
-	  
-	  /*if(sysem_mean_arr_e[isys][imass]==0) sysem_mean_arr_e[isys][imass] = 0.001;
-	  if(syspho_mean_arr_e[isys][imass]==0) syspho_mean_arr_e[isys][imass] = 0.001;
-	  if(sysem_reso_arr_e[isys][imass]==0) sysem_reso_arr_e[isys][imass] = 0.001;
-	  if(syspho_reso_arr_e[isys][imass]==0) syspho_reso_arr_e[isys][imass] = 0.001;
-	  */
-
-
-	  if(sysem_mean_arr_e[isys][imass]==0) sysem_mean_arr_e[isys][imass] =  num_zero_shapesys;
-	  if(syspho_mean_arr_e[isys][imass]==0) syspho_mean_arr_e[isys][imass] = num_zero_shapesys;
-	  
-	  
-	  if(sysem_reso_arr_e[isys][imass]==0) sysem_reso_arr_e[isys][imass] =  num_zero_shapesys;
-	  if(syspho_reso_arr_e[isys][imass]==0) syspho_reso_arr_e[isys][imass] = num_zero_shapesys;
-	  
-	}
-
-	  datacard += TString::Format("CMS_llg_delta_eleEM_mean_chan0_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_mean_arr_e[0][imass]);
-	  datacard += TString::Format("CMS_llg_delta_eleEM_mean_chan1_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_mean_arr_e[1][imass] );
-	  datacard += TString::Format("CMS_llg_delta_eleEM_mean_chan2_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_mean_arr_e[2][imass]);
-	  datacard += TString::Format("CMS_llg_delta_eleEM_mean_chan3_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_mean_arr_e[3][imass] );
-	  datacard += TString::Format("CMS_llg_delta_eleEM_mean_chan4_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_mean_arr_e[4][imass]);
-	  //datacard += TString::Format("CMS_hzg_delta_eleEM_mean_chan5_m%d_cat%d    param 1 %-15f\n",  m, cat, sysem_mean_arr_e[5][imass] );
-
-
-
-	  datacard += TString::Format("CMS_llg_delta_eleEM_sigma_chan0_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_reso_arr_e[0][imass]);
-	  datacard += TString::Format("CMS_llg_delta_eleEM_sigma_chan1_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_reso_arr_e[1][imass]);
-	  datacard += TString::Format("CMS_llg_delta_eleEM_sigma_chan2_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_reso_arr_e[2][imass]);
-	  datacard += TString::Format("CMS_llg_delta_eleEM_sigma_chan3_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_reso_arr_e[3][imass]);
-	  datacard += TString::Format("CMS_llg_delta_eleEM_sigma_chan4_m%d_cat%d    param 0 %-15f\n",  m, cat, sysem_reso_arr_e[4][imass]);
-	  //datacard += TString::Format("CMS_hzg_delta_eleEM_reso_chan5_m%d_cat%d    param 1 %-15f\n",  m, cat, sysem_reso_arr_e[5][imass]);
-
-      }
-   
-
       /////add bkg uncertainties
       //CMS_hzg_mass
 
@@ -2198,23 +1761,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
       
       
       
-
-
-      /*
-      // declare uncertainties for the energy scale and resolution
-      // (as described by the nuisance parameters above)
-      // TODO: errors are set by hand
-      datacard += TString::Format("CMS_scale_%s                                param          1     0.05\n", channel);
-      datacard += TString::Format("CMS_res_%s                                  param          1     0.01\n", channel);
-      */
-      
-      /*// declare parameters of the background PDF to be freely floating
-      for (int i = 0; i < getNbkgPar(); i++) {
-	TString nameStr = TString::Format("%s_bgr", getbkgfitParName(i).c_str());
-         datacard += TString::Format("%-44s flatParam\n", nameStr.Data());
-      }
-      */
-
 
       cout<<"Writing data card finally"<<endl;
       // make datacard file
@@ -2311,35 +1857,10 @@ void statAn::simplemkdatacard(const char* channel, int cat)
    float B = 0.12*H_ref;
    float L = 0.12*W_ref;
    float R = 0.04*W_ref;
-   /*
-   TCanvas* c = new TCanvas("c","c",50,50,W,H);
-   
-   c->SetLeftMargin( L/W );
-   c->SetRightMargin( R/W );
-   c->SetTopMargin( T/H );
-   c->SetBottomMargin( B/H );
-   
-   gStyle->SetOptStat(0);
-   
-   c->SetFillColor(0);
-   c->SetBorderMode(0);
-   c->SetBorderSize(2);
-   c->SetTickx(1);
-   c->SetTicky(1);
-   c->SetFrameFillStyle(0);
-   c->SetFrameBorderMode(0);
-   c->SetFrameFillStyle(0);
-   c->SetFrameBorderMode(0);
-     */
      
 
    cout<<"Fetching result now and plotting......"<<endl;
    //RooPlot *plot = fX->frame();
-
-
-   
-   
-
    
    //fX->setRange("signal",124.0,126.0);
    fX->setRange("unblindR1",115,blind_min);
@@ -2497,40 +2018,8 @@ void statAn::simplemkdatacard(const char* channel, int cat)
      }
    }//if(!plotRooFITErrBands)
 
-   //dataObs->plotOn(plot,RooFit::CutRange("unblindR1"),RooFit::CutRange("unblindR2"),RooFit::Binning(nBinsForMass));
-   /*
-   cout<<"=====checking the error bands now ======"<<endl;
-   cout<<"channel : cat : "<<schannel<<" "<<cats<<endl;
-   RooCurve *central = plot->getCurve("central");
-   RooCurve *bounds = plot->getCurve("1sigma");
-   TGraph* upBound = new TGraph(central->GetN());
-   TGraph* loBound = new TGraph(central->GetN());
-   TGraph* centralval = new TGraph(central->GetN());
-   
-   for( int j = 0; j < bounds->GetN(); ++j ){
-     if( j < central->GetN() )
-       
-       upBound->SetPoint(j, bounds->GetX()[j], bounds->GetY()[j]);
-     else
-       loBound->SetPoint(j, bounds->GetX()[j], bounds->GetY()[j]);
-   }
-   for( int j = 0; j < central->GetN(); ++j ){
-     centralval->SetPoint(j, central->GetX()[j], central->GetY()[j]);
-   }
-   cout<<"Central val at 120 : 136 : 137 : 138 : "<<centralval->Eval(120)<<" "<<centralval->Eval(136)<<" "<<centralval->Eval(137)<<" "<<centralval->Eval(138)<<endl;
-   cout<<"Err at 120 : 136 : 137 : 138 : "<<upBound->Eval(120)<<" "<<upBound->Eval(136)<<" "<<upBound->Eval(137)<<" "<<upBound->Eval(138)<<endl;
-   */
-
    TCanvas *c = setTCanvasNicev1("ccat");
    //c->Divide(1,2);
-   
-   
-
-   //TPad *pad1 = new TPad("pad1", "The pad 80% of the height",0.0,0.4,1.0,1.0,21);
-   //TPad *pad2 = new TPad("pad2", "The pad 20% of the height",0.0,0.0,1.0,0.398,22);
-
-   //TPad *pad1 = new TPad("pad1", "The pad 80% of the height",0.0,0.2,1.0,1.0,21);
-   //TPad *pad2 = new TPad("pad2", "The pad 20% of the height",0.0,0.0,1.0,0.198,22);
 
    TPad *pad1;
    TPad *pad2;
@@ -2639,13 +2128,6 @@ void statAn::simplemkdatacard(const char* channel, int cat)
    //lat->DrawLatex(0.1,0.92,Form("#chi^{2} = %.3f, Fit Status = %d ",chi2,status));
    
    if(!plotRooFITErrBands){ 
-     
-     /*oneSigmaBand->SetFillColor(kGreen);
-     oneSigmaBand->SetLineColor(kGreen);
-          
-     twoSigmaBand->SetFillColor(kYellow);
-     twoSigmaBand->SetLineColor(kYellow);
-     */
 
      ///CWR
      oneSigmaBand->SetFillColor(kGreen+1);
